@@ -29,7 +29,7 @@ export const themes: Record<string, Theme> = {
             value: '1.6.0'
           },
         ],
-        r2_file: 'woozio-homepage-layout-pack-v2.1.0.zip',
+        r2_file: 'demo-import-test-file.zip',
       },
       {
         ID: "064e94a5-a9ea-4d49-950e-993a19e48bf5",
@@ -51,7 +51,7 @@ export const themes: Record<string, Theme> = {
             value: "8.0"
           }
         ],
-        r2_file: 'woozio-product-quick-view-v1.3.2.zip',
+        r2_file: 'demo-import-test-file.zip',
       },
       {
         ID: "b8f2c91d-3a4e-4f6b-8c2d-1e9f7a5b3c8d",

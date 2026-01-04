@@ -28,8 +28,8 @@ export const getPackageFile = async ( req: Request, res: Response, next: NextFun
     if (!package_item) {
       return res.status(404).json({ error: 'Package not found' });
     }
-    const url = await packageService.getPackageFile(package_item.r2_file);
-    res.status(200).json({ download_url: url });
+    const packageDownload = await packageService.getPackageFile(package_item.r2_file);
+    res.status(200).json(packageDownload);
   } catch (error) {
     next(error);
   }
