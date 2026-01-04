@@ -14,6 +14,9 @@ export interface Package {
   size: string;
   createdAt: Date;
   updatedAt: Date;
-  required_theme_version: string;
+  required: {
+    type: string;
+    value: string;
+  }[];
   r2_file: string;
 }
