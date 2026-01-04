@@ -12,7 +12,7 @@ export const themes: Record<string, Theme> = {
         image: "https://cdn.dribbble.com/userupload/15995809/file/original-5924f3b4922c49edc51ff35710debac1.png?crop=0x0-2400x1800&format=webp&resize=400x300&vertical=center",
         preview_url: 'https://demo.woozio.com/homepage-layout-pack',
         tags: ['woocommerce', 'homepage', 'layout', 'landing-page'],
-        size: '24.8MB',
+        size: '101.19MB',
         createdAt: new Date('2024-01-15T10:30:00Z'),
         updatedAt: new Date('2024-03-20T14:22:00Z'),
         required: [
@@ -38,7 +38,7 @@ export const themes: Record<string, Theme> = {
         image: "https://cdn.dribbble.com/userupload/43050594/file/original-61bb39cccb2e523333566e34c9c81941.png?format=webp&resize=400x300&vertical=center",
         preview_url: 'https://demo.woozio.com/product-quick-view',
         tags: ['woocommerce', 'extension', 'product-page', 'ux'],
-        size: '3.2MB',
+        size: '101.19MB',
         createdAt: new Date('2024-02-10T09:15:00Z'),
         updatedAt: new Date('2024-03-18T16:45:00Z'),
         required: [

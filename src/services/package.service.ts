@@ -39,7 +39,11 @@ export const getPackageFile = async (r2_file_path: string) : Promise<PackageFile
     Bucket: process.env.R2_BUCKET!,
     Key: r2_file_path
   });
-  const url = await getSignedUrl(r2, command, { expiresIn: 60 * 60 * 24 }); // 24 hours
+  const url = await getSignedUrl(
+    r2, 
+    command, 
+    { expiresIn: 60 * 60 * 1 }
+  ); // 1 hours
   return {
     signedUrl: url,
     size: meta.ContentLength,
