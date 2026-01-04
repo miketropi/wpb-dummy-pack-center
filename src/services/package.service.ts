@@ -43,7 +43,7 @@ export const getPackageFile = async (r2_file_path: string) : Promise<PackageFile
     r2, 
     command, 
     { expiresIn: 60 * 60 * 1 }
-  ); // 1 hours
+  ); // 1hr
   return {
     signedUrl: url,
     size: meta.ContentLength,
