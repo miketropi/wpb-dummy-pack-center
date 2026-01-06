@@ -18,5 +18,10 @@ export interface Package {
     type: string;
     value: string;
   }[];
+  required_plugins: {
+    slug: string;
+    name: string;
+    version: string;
+  }[];
   r2_file: string;
 }
