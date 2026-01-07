@@ -37,11 +37,6 @@ export const themes: Record<string, Theme> = {
             "version": "6.7.0.2"
           },
           {
-            "slug": "advanced-database-cleaner\/advanced-db-cleaner.php",
-            "name": "Advanced Database Cleaner",
-            "version": "4.0.3"
-          },
-          {
             "slug": "elementor-pro\/elementor-pro.php",
             "name": "Elementor Pro",
             "version": "3.34.0"
@@ -57,16 +52,6 @@ export const themes: Record<string, Theme> = {
             "version": "3.5.1.29"
           },
           {
-            "slug": "woocommerce-gateway-stripe\/woocommerce-gateway-stripe.php",
-            "name": "WooCommerce Stripe Gateway",
-            "version": "10.2.0"
-          },
-          {
-            "slug": "woocommerce-paypal-payments\/woocommerce-paypal-payments.php",
-            "name": "WooCommerce PayPal Payments",
-            "version": "3.3.1"
-          },
-          {
             "slug": "woocommerce\/woocommerce.php",
             "name": "WooCommerce",
             "version": "10.4.3"
@@ -76,11 +61,6 @@ export const themes: Record<string, Theme> = {
             "name": "Worry Proof Backup",
             "version": "0.2.1"
           },
-          {
-            "slug": "wp-crontrol\/wp-crontrol.php",
-            "name": "WP Crontrol",
-            "version": "1.20.0"
-          }
         ],
         r2_file: 'Dummy-Pack-Woozio-Mini.zip',
       },
