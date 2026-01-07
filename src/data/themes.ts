@@ -59,7 +59,7 @@ export const themes: Record<string, Theme> = {
           {
             "slug": "worry-proof-backup\/worry-proof-backup.php",
             "name": "Worry Proof Backup",
-            "version": "0.2.1"
+            "version": "0.2.2"
           },
         ],
         r2_file: 'Dummy-Pack-Woozio-Mini.zip',
