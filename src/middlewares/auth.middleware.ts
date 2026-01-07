@@ -4,7 +4,7 @@ import { decodePayload } from '../util/libs';
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const xxx_meta = req.headers['xxx-meta'] as string;
   const payload = decodePayload(xxx_meta);
-  
+
   // Developer note: Use this middleware for future authentication, license checking, or payload validation.
   // Example payload format:
   /*
@@ -52,9 +52,8 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
   */
   const license_key = payload && (payload as any).license_key;
   if (!license_key) {
-    return res.status(401).json({ 
-      success: false,
-      data: 'Invalid license key'
+    return res.status(401).json({
+      error: 'Invalid license key'
     });
   }
 

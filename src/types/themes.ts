@@ -7,8 +7,10 @@ export interface Theme {
 export interface Package {
   ID: string;
   name: string;
+  free?: boolean;
+  locked?: boolean;
   description: string;
-  image: string;
+  image?: string;
   preview_url: string;
   tags: string[];
   size: string;
@@ -18,7 +20,7 @@ export interface Package {
     type: string;
     value: string;
   }[];
-  required_plugins: {
+  required_plugins?: {
     slug: string;
     name: string;
     version: string;

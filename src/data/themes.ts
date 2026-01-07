@@ -64,6 +64,67 @@ export const themes: Record<string, Theme> = {
         ],
         r2_file: 'Dummy-Pack-Woozio-Mini.zip',
       },
+      {
+        ID: "cf2f24a8-2a31-4f69-9a0d-089d0ea1061c",
+        name: "Dummy Package Woozio Free",
+        description: "Woozio is a modern and flexible multipurpose WooCommerce WordPress theme built with Elementor, designed to help you create professional online stores across a wide range of industries.",
+        image: "https://cdn.dribbble.com/userupload/44789582/file/fb478543a7b144298027aa710186277b.png?format=webp&resize=400x300&vertical=center",
+        preview_url: 'https://stg-woozio-staging.kinsta.cloud/',
+        tags: ['woocommerce', 'free'],
+        free: true,
+        // locked: true,
+        size: '207.4MB',
+        createdAt: new Date('2024-02-10T09:15:00Z'),
+        updatedAt: new Date('2024-03-18T16:45:00Z'),
+        required: [
+          {
+            type: "theme_version",
+            value: '1.0.0'
+          },
+          {
+            type: "php_version",
+            value: "8.0"
+          }
+        ],
+        required_plugins: [
+          {
+            "slug": "gravityforms\/gravityforms.php",
+            "name": "Gravity Forms",
+            "version": "2.9.24"
+          },
+          {
+            "slug": "advanced-custom-fields-pro\/acf.php",
+            "name": "Advanced Custom Fields PRO",
+            "version": "6.7.0.2"
+          },
+          {
+            "slug": "elementor-pro\/elementor-pro.php",
+            "name": "Elementor Pro",
+            "version": "3.34.0"
+          },
+          {
+            "slug": "elementor\/elementor.php",
+            "name": "Elementor",
+            "version": "3.34.0"
+          },
+          {
+            "slug": "nextend-smart-slider3-pro\/nextend-smart-slider3-pro.php",
+            "name": "Smart Slider 3 Pro",
+            "version": "3.5.1.29"
+          },
+          {
+            "slug": "woocommerce\/woocommerce.php",
+            "name": "WooCommerce",
+            "version": "10.4.3"
+          },
+          {
+            "slug": "worry-proof-backup\/worry-proof-backup.php",
+            "name": "Worry Proof Backup",
+            "version": "0.2.2"
+          },
+        ],
+        r2_file: 'Dummy-Pack-Woozio-Mini.zip',
+      },
     ]
   },
 }
