@@ -8,6 +8,7 @@ A TypeScript Express API server for managing and serving WordPress theme package
 
 - **Node.js** v18+ 
 - **npm** or **yarn**
+- **Vercel CLI** (for development and deployment)
 - **Cloudflare R2** account with bucket and API credentials
 
 ### Installation
@@ -18,11 +19,16 @@ git clone <repository-url>
 cd wpb-dummy-pack-center
 npm install
 
+# Install Vercel CLI globally (if not already installed)
+npm install -g vercel
+
 # Configure environment
 cp .env-exam .env  # If template exists, or create manually
 ```
 
 ### Environment Variables
+
+#### Local Development
 
 Create a `.env` file in the root directory:
 
@@ -34,7 +40,40 @@ R2_BUCKET=your_bucket_name
 R2_ENDPOINT=https://your_account_id.r2.cloudflarestorage.com
 ```
 
+#### Vercel Deployment
+
+Set environment variables in Vercel:
+
+1. **Via CLI:**
+```bash
+vercel env add R2_ACCESS_KEY_ID
+vercel env add R2_SECRET_ACCESS_KEY
+vercel env add R2_BUCKET
+vercel env add R2_ENDPOINT
+```
+
+2. **Via Dashboard:**
+   - Go to your project → Settings → Environment Variables
+   - Add each variable for Production, Preview, and Development environments
+
+**Note:** `vercel dev` automatically loads variables from `.env` file or Vercel project settings.
+
 ### Development
+
+#### Option 1: Vercel CLI (Recommended)
+
+```bash
+# Start development server with Vercel
+vercel dev
+```
+
+This will:
+- Start a local development server that mimics Vercel's production environment
+- Automatically load environment variables from `.env` or Vercel project settings
+- Provide hot-reload functionality
+- Run on `http://localhost:3000` (or Vercel's default port)
+
+#### Option 2: Standard Node.js Development
 
 ```bash
 # Development with hot-reload
@@ -49,28 +88,56 @@ npm start
 
 The server runs on `http://localhost:3000` (or your configured `PORT`).
 
+### Deployment
+
+#### Deploy to Vercel
+
+```bash
+# First-time deployment (login and link project)
+vercel
+
+# Deploy to production
+vercel --prod
+
+# Deploy preview (staging)
+vercel
+```
+
+**Note:** Make sure to set environment variables in Vercel dashboard:
+- Go to your project settings → Environment Variables
+- Add all required variables: `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`, `R2_ENDPOINT`
+
 ## 📁 Project Structure
 
 ```
-src/
-├── app.ts                    # Express app configuration & middleware setup
-├── server.ts                 # Server entry point
-├── controllers/              # Request handlers
-│   └── package.controller.ts # Package & theme controllers
-├── services/                 # Business logic layer
-│   └── package.service.ts   # R2 file operations & signed URL generation
-├── routes/                   # API route definitions
-│   ├── index.ts             # Main router (mounts sub-routes)
-│   └── package.routes.ts    # Package-specific routes
-├── middlewares/             # Express middlewares
-│   └── auth.middleware.ts   # Authentication & license validation
-├── data/                    # Static data
-│   └── themes.ts            # Theme & package definitions
-├── types/                   # TypeScript type definitions
-│   └── themes.ts            # Theme & Package interfaces
-└── util/                    # Utility functions
-    └── libs.ts              # Helper functions (payload decoding, etc.)
+├── api/
+│   └── index.ts             # Vercel serverless entry point (exports Express app)
+├── src/
+│   ├── app.ts               # Express app configuration & middleware setup
+│   ├── server.ts            # Standalone server entry point (for npm start)
+│   ├── controllers/         # Request handlers
+│   │   └── package.controller.ts
+│   ├── services/            # Business logic layer
+│   │   └── package.service.ts
+│   ├── routes/              # API route definitions
+│   │   ├── index.ts        # Main router (mounts sub-routes)
+│   │   └── package.routes.ts
+│   ├── middlewares/         # Express middlewares
+│   │   └── auth.middleware.ts
+│   ├── data/               # Static data
+│   │   └── themes.ts
+│   ├── types/              # TypeScript type definitions
+│   │   └── themes.ts
+│   └── util/               # Utility functions
+│       └── libs.ts
+├── vercel.json             # Vercel configuration
+└── package.json            # Dependencies and scripts
 ```
+
+**Vercel Configuration:**
+- `api/index.ts` is the serverless function entry point for Vercel
+- `vercel.json` routes all requests to the Express app
+- The Express app from `src/app.ts` is exported and used by both Vercel and standalone server
 
 ## 🔌 API Endpoints
 
@@ -88,12 +155,12 @@ Retrieve theme details and available packages.
 **Response:**
 ```json
 {
-  "name": "Woozio - Modern WooCommerce Theme",
+  "name": "Theme Name",
   "description": "A premium WordPress theme...",
   "packages": [
     {
       "ID": "064e94a5-a9ea-4d49-950e-993a19e48bf5",
-      "name": "Dummy Package Woozio Staging",
+      "name": "Dummy Package Name",
       "description": "...",
       "image": "https://...",
       "preview_url": "https://...",
@@ -103,7 +170,7 @@ Retrieve theme details and available packages.
       "updatedAt": "2024-03-18T16:45:00.000Z",
       "required": [...],
       "required_plugins": [...],
-      "r2_file": "Dummy-Pack-Woozio-Mini.zip"
+      "r2_file": "Dummy-Pack-Path-From-Cloudflare-R2.zip"
     }
   ]
 }
@@ -157,7 +224,7 @@ The decoded payload should contain:
   "license_key": "your-license-key",
   "wordpress_version": "6.9",
   "php_version": "8.4.10",
-  "theme_slug": "woozio",
+  "theme_slug": "themeslug",
   "theme_version": "1.0"
 }
 ```
@@ -278,8 +345,25 @@ Edit `src/middlewares/auth.middleware.ts` to:
 lsof -ti:3000 | xargs kill -9
 ```
 
+### Vercel CLI Issues
+
+**`vercel dev` not working:**
+- Ensure Vercel CLI is installed: `npm install -g vercel`
+- Login to Vercel: `vercel login`
+- Link project: `vercel link` (if not already linked)
+
+**Environment variables not loading:**
+- Check `.env` file exists in project root
+- Verify variables are set in Vercel dashboard
+- Restart `vercel dev` after adding new variables
+
+**Deployment errors:**
+- Check `vercel.json` configuration
+- Ensure `api/index.ts` exists and exports the Express app
+- Review build logs: `vercel logs`
+
 ### R2 Connection Errors
-- Verify credentials in `.env`
+- Verify credentials in `.env` (local) or Vercel environment variables (deployed)
 - Check bucket exists and is accessible
 - Ensure endpoint URL format: `https://<account-id>.r2.cloudflarestorage.com`
 - Verify R2 API tokens have correct permissions
@@ -300,6 +384,10 @@ npm run build  # See detailed errors
 - Signed URLs expire after 1 hour (configurable in `package.service.ts`)
 - Theme data is currently static; consider migrating to a database for production
 - Error handling middleware is available but commented out in `app.ts`
+- **Vercel Deployment**: The project is configured for serverless deployment on Vercel
+  - Uses `api/index.ts` as the serverless function entry point
+  - All routes are handled by a single Express app instance
+  - Environment variables should be set in Vercel dashboard for production
 
 ## 📄 License
 
