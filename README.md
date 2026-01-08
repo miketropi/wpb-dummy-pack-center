@@ -111,27 +111,29 @@ vercel
 
 ```
 ├── api/
-│   └── index.ts             # Vercel serverless entry point (exports Express app)
+│   └── index.ts                    # Vercel serverless entry point (exports Express app)
 ├── src/
-│   ├── app.ts               # Express app configuration & middleware setup
-│   ├── server.ts            # Standalone server entry point (for npm start)
-│   ├── controllers/         # Request handlers
-│   │   └── package.controller.ts
-│   ├── services/            # Business logic layer
-│   │   └── package.service.ts
-│   ├── routes/              # API route definitions
-│   │   ├── index.ts        # Main router (mounts sub-routes)
-│   │   └── package.routes.ts
-│   ├── middlewares/         # Express middlewares
-│   │   └── auth.middleware.ts
-│   ├── data/               # Static data
-│   │   └── themes.ts
-│   ├── types/              # TypeScript type definitions
-│   │   └── themes.ts
-│   └── util/               # Utility functions
-│       └── libs.ts
-├── vercel.json             # Vercel configuration
-└── package.json            # Dependencies and scripts
+│   ├── app.ts                      # Express app configuration & middleware setup
+│   ├── server.ts                   # Standalone server entry point (for npm start)
+│   ├── controllers/                # Request handlers
+│   │   └── package.controller.ts   # Package & theme controllers
+│   ├── services/                   # Business logic layer
+│   │   └── package.service.ts      # R2 operations, package lookup, signed URLs
+│   ├── routes/                     # API route definitions
+│   │   ├── index.ts               # Main router (mounts sub-routes)
+│   │   └── package.routes.ts      # Package-specific routes with middleware chains
+│   ├── middlewares/                # Express middlewares
+│   │   ├── auth.middleware.ts      # License key validation
+│   │   ├── detectPackage.middleware.ts  # Package detection & validation
+│   │   └── guard.middleware.ts     # Package access control (free/locked)
+│   ├── data/                       # Static data
+│   │   └── themes.ts              # Theme & package definitions
+│   ├── types/                      # TypeScript type definitions
+│   │   └── themes.ts              # Theme & Package interfaces
+│   └── util/                       # Utility functions
+│       └── libs.ts                # Payload decoding helpers
+├── vercel.json                     # Vercel configuration
+└── package.json                    # Dependencies and scripts
 ```
 
 **Vercel Configuration:**
@@ -141,22 +143,19 @@ vercel
 
 ## 🔌 API Endpoints
 
-All endpoints are prefixed with `/api/packages` and require authentication via the `xxx-meta` header.
+All endpoints are prefixed with `/api/packages`. Authentication requirements vary by endpoint.
 
 ### Get Theme Information
 
-Retrieve theme details and available packages.
+Retrieve theme details and available packages. **No authentication required.**
 
 **Endpoint:** `GET /api/packages/:theme_slug`
-
-**Headers:**
-- `xxx-meta` (required): Base64-encoded, reversed JSON payload containing license information
 
 **Response:**
 ```json
 {
   "name": "Theme Name",
-  "description": "A premium WordPress theme...",
+  "description": "<p>HTML description...</p>",
   "packages": [
     {
       "ID": "064e94a5-a9ea-4d49-950e-993a19e48bf5",
@@ -165,11 +164,22 @@ Retrieve theme details and available packages.
       "image": "https://...",
       "preview_url": "https://...",
       "tags": ["woocommerce", "staging"],
+      "free": false,
+      "locked": false,
       "size": "207.4MB",
       "createdAt": "2024-02-10T09:15:00.000Z",
       "updatedAt": "2024-03-18T16:45:00.000Z",
-      "required": [...],
-      "required_plugins": [...],
+      "required": [
+        { "type": "theme_version", "value": "1.0.0" },
+        { "type": "php_version", "value": "8.0" }
+      ],
+      "required_plugins": [
+        {
+          "slug": "woocommerce/woocommerce.php",
+          "name": "WooCommerce",
+          "version": "10.4.3"
+        }
+      ],
       "r2_file": "Dummy-Pack-Path-From-Cloudflare-R2.zip"
     }
   ]
@@ -178,18 +188,39 @@ Retrieve theme details and available packages.
 
 **Example:**
 ```bash
+curl http://localhost:3000/api/packages/woozio
+```
+
+### Validate Preinstall
+
+Validate package requirements before installation. **Requires authentication** (unless package is free).
+
+**Endpoint:** `GET /api/packages/preinstall/:theme_slug/:package_id`
+
+**Headers:**
+- `xxx-meta` (required for non-free packages): Base64-encoded, reversed JSON payload
+
+**Response:**
+```json
+{
+  "message": "passed"
+}
+```
+
+**Example:**
+```bash
 curl -H "xxx-meta: <base64-encoded-payload>" \
-  http://localhost:3000/api/packages/woozio
+  http://localhost:3000/api/packages/preinstall/woozio/064e94a5-a9ea-4d49-950e-993a19e48bf5
 ```
 
 ### Get Package Download URL
 
-Generate a signed download URL for a specific package file.
+Generate a signed download URL for a specific package file. **Requires authentication** (unless package is free).
 
 **Endpoint:** `GET /api/packages/:theme_slug/:package_id`
 
 **Headers:**
-- `xxx-meta` (required): Base64-encoded, reversed JSON payload containing license information
+- `xxx-meta` (required for non-free packages): Base64-encoded, reversed JSON payload
 
 **Response:**
 ```json
@@ -205,15 +236,31 @@ Generate a signed download URL for a specific package file.
 
 **Example:**
 ```bash
+# For free packages (no auth required)
+curl http://localhost:3000/api/packages/woozio/cf2f24a8-2a31-4f69-9a0d-089d0ea1061c
+
+# For paid packages (auth required)
 curl -H "xxx-meta: <base64-encoded-payload>" \
   http://localhost:3000/api/packages/woozio/064e94a5-a9ea-4d49-950e-993a19e48bf5
 ```
 
-## 🔐 Authentication
+## 🔐 Authentication & Access Control
 
-The API uses a custom authentication mechanism via the `xxx-meta` header. The header contains a base64-encoded, reversed JSON payload.
+The API uses a flexible authentication system that adapts based on package properties.
 
-### Payload Format
+### Package Access Types
+
+Packages can have the following properties that affect authentication:
+
+- **Free Packages** (`free: true`): No authentication required, accessible to everyone
+- **Locked Packages** (`locked: true`): Blocked for all users, returns `401 Unauthorized`
+- **Regular Packages**: Require valid `xxx-meta` header with license key
+
+### Authentication Mechanism
+
+For non-free packages, the API uses a custom authentication mechanism via the `xxx-meta` header. The header contains a base64-encoded, reversed JSON payload.
+
+#### Payload Format
 
 The decoded payload should contain:
 ```json
@@ -229,14 +276,14 @@ The decoded payload should contain:
 }
 ```
 
-### Authentication Flow
+#### Authentication Flow
 
 1. Client encodes the payload: Base64 → Reverse string → URL encode
 2. Server decodes: URL decode → Reverse string → Parse JSON
 3. Middleware validates `license_key` field
 4. Missing or invalid `license_key` returns `401 Unauthorized`
 
-### Implementation Details
+#### Implementation Details
 
 The authentication middleware (`src/middlewares/auth.middleware.ts`) uses `decodePayload()` from `src/util/libs.ts`:
 
@@ -250,6 +297,26 @@ const encoded = btoa(unescape(encodeURIComponent(reversed)));
 const decoded = decodePayload(encoded); // Returns parsed object or null
 ```
 
+### Middleware Chain
+
+Protected routes use a middleware chain:
+
+1. **`detectPackageMiddleware`**: Validates package exists and attaches to `req.package`
+2. **`guardMiddleware`**: Checks package access rules:
+   - If `locked: true` → Returns `401 Unauthorized`
+   - If `free: true` → Skips authentication, allows access
+   - Otherwise → Calls `authMiddleware` for license validation
+3. **Controller**: Handles the request
+
+```typescript
+// Example route with middleware chain
+router.get('/:theme_slug/:package_id', 
+  detectPackageMiddleware,  // 1. Detect & validate package
+  guardMiddleware,          // 2. Check access rules
+  packageController.getPackageFile  // 3. Handle request
+);
+```
+
 ## 🏗️ Architecture
 
 ### Request Flow
@@ -257,11 +324,17 @@ const decoded = decodePayload(encoded); // Returns parsed object or null
 ```
 Client Request
     ↓
-Express App (app.ts)
-    ↓
-Auth Middleware (validates xxx-meta header)
+Express App (app.ts) - Global middlewares (Helmet, CORS, Morgan)
     ↓
 Route Handler (package.routes.ts)
+    ↓
+[For protected routes]
+    ↓
+detectPackageMiddleware - Validates package, attaches to req.package
+    ↓
+guardMiddleware - Checks free/locked status, applies auth if needed
+    ↓
+authMiddleware - Validates license key (if required)
     ↓
 Controller (package.controller.ts)
     ↓
@@ -273,9 +346,26 @@ Response (JSON)
 ### Key Components
 
 - **Controllers**: Handle HTTP requests, validate params, call services
-- **Services**: Business logic, R2 operations, signed URL generation
-- **Middlewares**: Global authentication applied to all routes
+- **Services**: Business logic, R2 operations, package lookup, signed URL generation
+- **Middlewares**: 
+  - `detectPackageMiddleware`: Package detection and validation
+  - `guardMiddleware`: Access control based on package properties
+  - `authMiddleware`: License key validation (applied conditionally)
 - **Data Layer**: Static theme/package definitions (can be migrated to DB)
+
+### Package Properties
+
+Packages support the following optional properties:
+
+```typescript
+interface Package {
+  ID: string;
+  name: string;
+  free?: boolean;      // If true, skips authentication
+  locked?: boolean;   // If true, blocks all access
+  // ... other properties
+}
+```
 
 ### R2 Integration
 
@@ -292,15 +382,72 @@ The service uses AWS SDK v3's S3-compatible client for Cloudflare R2:
 1. Add theme definition to `src/data/themes.ts`:
 ```typescript
 export const themes: Record<string, Theme> = {
-  your-theme: {
+  'your-theme-slug': {
     name: "Your Theme Name",
-    description: "...",
-    packages: [...]
+    description: "<p>HTML description...</p>",
+    packages: [
+      {
+        ID: "unique-package-id",
+        name: "Package Name",
+        description: "...",
+        preview_url: "https://...",
+        tags: ["tag1", "tag2"],
+        free: false,        // Optional: set to true for free packages
+        locked: false,      // Optional: set to true to block access
+        size: "100MB",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        required: [
+          { type: "theme_version", value: "1.0.0" },
+          { type: "php_version", value: "8.0" }
+        ],
+        required_plugins: [  // Optional
+          {
+            slug: "plugin/plugin.php",
+            name: "Plugin Name",
+            version: "1.0.0"
+          }
+        ],
+        r2_file: "path/to/file.zip"
+      }
+    ]
   }
 };
 ```
 
 2. Ensure the `r2_file` path in packages matches your R2 bucket structure
+
+### Creating Package Types
+
+**Free Package** (no authentication required):
+```typescript
+{
+  ID: "...",
+  name: "Free Package",
+  free: true,  // Skips authentication
+  // ... other properties
+}
+```
+
+**Locked Package** (blocked for all users):
+```typescript
+{
+  ID: "...",
+  name: "Locked Package",
+  locked: true,  // Returns 401 Unauthorized
+  // ... other properties
+}
+```
+
+**Regular Package** (requires authentication):
+```typescript
+{
+  ID: "...",
+  name: "Regular Package",
+  // free and locked are undefined/false
+  // ... other properties
+}
+```
 
 ### Modifying Authentication
 
@@ -309,11 +456,44 @@ Edit `src/middlewares/auth.middleware.ts` to:
 - Implement license key verification against a database
 - Add rate limiting or IP restrictions
 
+### Modifying Access Control
+
+Edit `src/middlewares/guard.middleware.ts` to:
+- Change locked package behavior
+- Add custom free package rules
+- Implement additional access checks
+
 ### Extending API
 
-1. Add route in `src/routes/package.routes.ts`
-2. Create controller method in `src/controllers/package.controller.ts`
-3. Add service logic in `src/services/package.service.ts` if needed
+1. **Add route** in `src/routes/package.routes.ts`:
+```typescript
+// Public route (no middleware)
+router.get('/:theme_slug', packageController.getPackage);
+
+// Protected route (with middleware chain)
+router.get('/:theme_slug/:package_id', 
+  detectPackageMiddleware,
+  guardMiddleware,
+  packageController.getPackageFile
+);
+```
+
+2. **Create controller method** in `src/controllers/package.controller.ts`
+
+3. **Add service logic** in `src/services/package.service.ts` if needed
+
+### Package Lookup Service
+
+Use `getPackageByThemeSlugAndPackageId()` from `package.service.ts` to look up packages:
+
+```typescript
+import { getPackageByThemeSlugAndPackageId } from '../services/package.service';
+
+const package = getPackageByThemeSlugAndPackageId('theme-slug', 'package-id');
+if (!package) {
+  // Package not found
+}
+```
 
 ## 📦 Dependencies
 
@@ -380,14 +560,27 @@ npm run build  # See detailed errors
 
 ## 📝 Notes
 
-- All routes are protected by global `authMiddleware`
+### Authentication & Access
+- Authentication is **not global** - applied per-route via middleware chains
+- Free packages (`free: true`) skip authentication entirely
+- Locked packages (`locked: true`) return `401 Unauthorized` for all requests
+- Regular packages require valid `xxx-meta` header with license key
+
+### Package Management
+- Package lookup is handled by `detectPackageMiddleware` which attaches package to `req.package`
+- Access control is handled by `guardMiddleware` which checks package properties
+- Package data is currently static in `src/data/themes.ts`; consider migrating to a database for production
+
+### Technical Details
 - Signed URLs expire after 1 hour (configurable in `package.service.ts`)
-- Theme data is currently static; consider migrating to a database for production
 - Error handling middleware is available but commented out in `app.ts`
-- **Vercel Deployment**: The project is configured for serverless deployment on Vercel
-  - Uses `api/index.ts` as the serverless function entry point
-  - All routes are handled by a single Express app instance
-  - Environment variables should be set in Vercel dashboard for production
+- Package properties (`free`, `locked`) are optional and default to `false`/`undefined`
+
+### Vercel Deployment
+- The project is configured for serverless deployment on Vercel
+- Uses `api/index.ts` as the serverless function entry point
+- All routes are handled by a single Express app instance
+- Environment variables should be set in Vercel dashboard for production
 
 ## 📄 License
 
