@@ -50,6 +50,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     });
   }
   */
+
   const license_key = payload && (payload as any).license_key;
   if (!license_key) {
     return res.status(401).json({
