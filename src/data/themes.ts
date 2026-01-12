@@ -27,43 +27,43 @@ export const themes: Record<string, Theme> = {
             value: "8.0"
           }
         ],
-        required_plugins: [
-          {
-            "slug": "gravityforms\/gravityforms.php",
-            "name": "Gravity Forms",
-            "version": "2.9.24"
-          },
-          {
-            "slug": "advanced-custom-fields-pro\/acf.php",
-            "name": "Advanced Custom Fields PRO",
-            "version": "6.7.0.2"
-          },
-          {
-            "slug": "elementor-pro\/elementor-pro.php",
-            "name": "Elementor Pro",
-            "version": "3.34.0"
-          },
-          {
-            "slug": "elementor\/elementor.php",
-            "name": "Elementor",
-            "version": "3.34.0"
-          },
-          {
-            "slug": "nextend-smart-slider3-pro\/nextend-smart-slider3-pro.php",
-            "name": "Smart Slider 3 Pro",
-            "version": "3.5.1.29"
-          },
-          {
-            "slug": "woocommerce\/woocommerce.php",
-            "name": "WooCommerce",
-            "version": "10.4.3"
-          },
-          {
-            "slug": "worry-proof-backup\/worry-proof-backup.php",
-            "name": "Worry Proof Backup",
-            "version": "0.2.2"
-          },
-        ],
+        // required_plugins: [
+        //   {
+        //     "slug": "gravityforms\/gravityforms.php",
+        //     "name": "Gravity Forms",
+        //     "version": "2.9.24"
+        //   },
+        //   {
+        //     "slug": "advanced-custom-fields-pro\/acf.php",
+        //     "name": "Advanced Custom Fields PRO",
+        //     "version": "6.7.0.2"
+        //   },
+        //   {
+        //     "slug": "elementor-pro\/elementor-pro.php",
+        //     "name": "Elementor Pro",
+        //     "version": "3.34.0"
+        //   },
+        //   {
+        //     "slug": "elementor\/elementor.php",
+        //     "name": "Elementor",
+        //     "version": "3.34.0"
+        //   },
+        //   {
+        //     "slug": "nextend-smart-slider3-pro\/nextend-smart-slider3-pro.php",
+        //     "name": "Smart Slider 3 Pro",
+        //     "version": "3.5.1.29"
+        //   },
+        //   {
+        //     "slug": "woocommerce\/woocommerce.php",
+        //     "name": "WooCommerce",
+        //     "version": "10.4.3"
+        //   },
+        //   {
+        //     "slug": "worry-proof-backup\/worry-proof-backup.php",
+        //     "name": "Worry Proof Backup",
+        //     "version": "0.2.2"
+        //   },
+        // ],
         r2_file: 'Dummy-Pack-Woozio-Mini.zip',
       },
       {
@@ -88,43 +88,43 @@ export const themes: Record<string, Theme> = {
             value: "8.0"
           }
         ],
-        required_plugins: [
-          {
-            "slug": "gravityforms\/gravityforms.php",
-            "name": "Gravity Forms",
-            "version": "2.9.24"
-          },
-          {
-            "slug": "advanced-custom-fields-pro\/acf.php",
-            "name": "Advanced Custom Fields PRO",
-            "version": "6.7.0.2"
-          },
-          {
-            "slug": "elementor-pro\/elementor-pro.php",
-            "name": "Elementor Pro",
-            "version": "3.34.0"
-          },
-          {
-            "slug": "elementor\/elementor.php",
-            "name": "Elementor",
-            "version": "3.34.0"
-          },
-          {
-            "slug": "nextend-smart-slider3-pro\/nextend-smart-slider3-pro.php",
-            "name": "Smart Slider 3 Pro",
-            "version": "3.5.1.29"
-          },
-          {
-            "slug": "woocommerce\/woocommerce.php",
-            "name": "WooCommerce",
-            "version": "10.4.3"
-          },
-          {
-            "slug": "worry-proof-backup\/worry-proof-backup.php",
-            "name": "Worry Proof Backup",
-            "version": "0.2.2"
-          },
-        ],
+        // required_plugins: [
+        //   {
+        //     "slug": "gravityforms\/gravityforms.php",
+        //     "name": "Gravity Forms",
+        //     "version": "2.9.24"
+        //   },
+        //   {
+        //     "slug": "advanced-custom-fields-pro\/acf.php",
+        //     "name": "Advanced Custom Fields PRO",
+        //     "version": "6.7.0.2"
+        //   },
+        //   {
+        //     "slug": "elementor-pro\/elementor-pro.php",
+        //     "name": "Elementor Pro",
+        //     "version": "3.34.0"
+        //   },
+        //   {
+        //     "slug": "elementor\/elementor.php",
+        //     "name": "Elementor",
+        //     "version": "3.34.0"
+        //   },
+        //   {
+        //     "slug": "nextend-smart-slider3-pro\/nextend-smart-slider3-pro.php",
+        //     "name": "Smart Slider 3 Pro",
+        //     "version": "3.5.1.29"
+        //   },
+        //   {
+        //     "slug": "woocommerce\/woocommerce.php",
+        //     "name": "WooCommerce",
+        //     "version": "10.4.3"
+        //   },
+        //   {
+        //     "slug": "worry-proof-backup\/worry-proof-backup.php",
+        //     "name": "Worry Proof Backup",
+        //     "version": "0.2.2"
+        //   },
+        // ],
         r2_file: 'Dummy-Pack-Woozio-Mini.zip',
       },
       {
@@ -149,43 +149,43 @@ export const themes: Record<string, Theme> = {
             value: "8.0"
           }
         ],
-        required_plugins: [
-          {
-            "slug": "gravityforms\/gravityforms.php",
-            "name": "Gravity Forms",
-            "version": "2.9.24"
-          },
-          {
-            "slug": "advanced-custom-fields-pro\/acf.php",
-            "name": "Advanced Custom Fields PRO",
-            "version": "6.7.0.2"
-          },
-          {
-            "slug": "elementor-pro\/elementor-pro.php",
-            "name": "Elementor Pro",
-            "version": "3.34.0"
-          },
-          {
-            "slug": "elementor\/elementor.php",
-            "name": "Elementor",
-            "version": "3.34.0"
-          },
-          {
-            "slug": "nextend-smart-slider3-pro\/nextend-smart-slider3-pro.php",
-            "name": "Smart Slider 3 Pro",
-            "version": "3.5.1.29"
-          },
-          {
-            "slug": "woocommerce\/woocommerce.php",
-            "name": "WooCommerce",
-            "version": "10.4.3"
-          },
-          {
-            "slug": "worry-proof-backup\/worry-proof-backup.php",
-            "name": "Worry Proof Backup",
-            "version": "0.2.2"
-          },
-        ],
+        // required_plugins: [
+        //   {
+        //     "slug": "gravityforms\/gravityforms.php",
+        //     "name": "Gravity Forms",
+        //     "version": "2.9.24"
+        //   },
+        //   {
+        //     "slug": "advanced-custom-fields-pro\/acf.php",
+        //     "name": "Advanced Custom Fields PRO",
+        //     "version": "6.7.0.2"
+        //   },
+        //   {
+        //     "slug": "elementor-pro\/elementor-pro.php",
+        //     "name": "Elementor Pro",
+        //     "version": "3.34.0"
+        //   },
+        //   {
+        //     "slug": "elementor\/elementor.php",
+        //     "name": "Elementor",
+        //     "version": "3.34.0"
+        //   },
+        //   {
+        //     "slug": "nextend-smart-slider3-pro\/nextend-smart-slider3-pro.php",
+        //     "name": "Smart Slider 3 Pro",
+        //     "version": "3.5.1.29"
+        //   },
+        //   {
+        //     "slug": "woocommerce\/woocommerce.php",
+        //     "name": "WooCommerce",
+        //     "version": "10.4.3"
+        //   },
+        //   {
+        //     "slug": "worry-proof-backup\/worry-proof-backup.php",
+        //     "name": "Worry Proof Backup",
+        //     "version": "0.2.2"
+        //   },
+        // ],
         r2_file: 'Dummy-Pack-Woozio-Mini.zip',
       },
     ]
